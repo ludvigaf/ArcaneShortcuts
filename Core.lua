@@ -79,7 +79,11 @@ local CAST_CMDS = { cast = "spell", castsequence = "spell", castrandom = "spell"
 
 -- Racials sit in cooldown macros for whoever has them; a missing one is
 -- expected, not a reason to flag the macro.
-local OPTIONAL = { ["blood fury"] = true, ["berserking"] = true, ["ancestral call"] = true }
+local OPTIONAL = {
+    ["blood fury"] = true, ["berserking"] = true, ["ancestral call"] = true,
+    -- Forever racials
+    ["will to survive"] = true, ["cannibalize"] = true, ["will of the forsaken"] = true,
+}
 
 local function trim(s) return (s:gsub("^%s+", ""):gsub("%s+$", "")) end
 
@@ -241,6 +245,43 @@ function AS:CreateOrUpdate(name, body, perCharacter, icon)
     local index = CreateMacro(name, icon, body, perCharacter and true or nil)
     if not index then return nil, "The game refused to create the macro." end
     return index
+end
+
+-- The player's existing macros. Account macros use slots 1-120 and character
+-- macros the slots after that; both are kept sorted, so indexes shift on edits.
+function AS:GetOwnMacros(perCharacter)
+    local numAccount, numChar = GetNumMacros()
+    local first = perCharacter and (MAX_ACCOUNT_MACROS or 120) or 0
+    local list = {}
+    for i = 1, (perCharacter and numChar or numAccount) do
+        local index = first + i
+        local name, icon, body = GetMacroInfo(index)
+        if name then
+            list[#list + 1] = {
+                name = name, body = body or "",
+                category = perCharacter and "Character" or "Account",
+                own = { index = index, perCharacter = perCharacter, name = name, icon = icon },
+            }
+        end
+    end
+    return list
+end
+
+-- Saves changes to an existing macro. Returns its (possibly new) index, or nil
+-- plus an error message. Unlike CreateOrUpdate it leaves the text as written.
+function AS:SaveMacro(index, name, body, icon)
+    if InCombatLockdown() then return nil, "Macros can't be edited in combat." end
+    name = trim(name or "")
+    if name == "" then return nil, "The macro needs a name." end
+    if #name > self.MAX_NAME then name = name:sub(1, self.MAX_NAME) end
+    if #body > self.MAX_BODY then return nil, ("The macro is %d characters; the limit is %d."):format(#body, self.MAX_BODY) end
+    return EditMacro(index, name, icon or QUESTION_MARK, body) or index
+end
+
+function AS:RemoveMacro(index)
+    if InCombatLockdown() then return nil, "Macros can't be deleted in combat." end
+    DeleteMacro(index)
+    return true
 end
 
 ---------------------------------------------------------------------------

@@ -11,6 +11,7 @@ local STATUS_TEXT = {
 local STATUS_DOT = { ok = { 0.25, 1, 0.25 }, partial = { 1, 0.8, 0 }, edit = { 1, 0.35, 0.35 } }
 
 local frame, state = nil, { class = nil, category = nil, macro = nil }
+local UpdateList, UpdateCategoryCounts
 
 local function ClassColor(class)
     local c = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
@@ -21,7 +22,25 @@ local function LocalizedClass(class)
     return (LOCALIZED_CLASS_NAMES_MALE and LOCALIZED_CLASS_NAMES_MALE[class]) or class:sub(1, 1) .. class:sub(2):lower()
 end
 
+-- Pseudo-class for the "My Macros" overview of the player's own macros.
+local OWN = "OWN"
+local OWN_LIMIT = { Account = MAX_ACCOUNT_MACROS or 120, Character = MAX_CHARACTER_MACROS or 18 }
+
+local function MacrosFor(cat)
+    if cat.class == OWN then return AS:GetOwnMacros(cat.name == "Character") end
+    return AS:GetMacros(cat.class, cat.name)
+end
+
+-- Own macros are rebuilt on every refresh, so compare them by slot.
+local function SameMacro(a, b)
+    if a == b then return true end
+    return a and b and a.own and b.own and a.own.perCharacter == b.own.perCharacter and a.own.index == b.own.index or false
+end
+
 local function CategoriesFor(class)
+    if class == OWN then
+        return { { class = OWN, name = "Account" }, { class = OWN, name = "Character" } }
+    end
     local list = {}
     for _, c in ipairs(AS.CATEGORIES[class]) do list[#list + 1] = { class = class, name = c } end
     list[#list + 1] = { class = AS.SHARED, name = AS.SHARED_CATEGORY }
@@ -62,9 +81,16 @@ local function UpdateDetailStatus()
     local blocked = status == "edit" or len > AS.MAX_BODY
     d.createChar:SetEnabled(not blocked)
     d.createAcct:SetEnabled(not blocked)
+    d.save:SetEnabled(len <= AS.MAX_BODY)
 
     -- Keep a hand-picked icon while it still applies; otherwise use the default.
-    local candidates = AS:IconCandidates(AS:ResolveTooltip(body))
+    local own = state.macro and state.macro.own
+    local candidates = AS:IconCandidates(own and body or AS:ResolveTooltip(body))
+    if own and own.icon then
+        local found
+        for _, c in ipairs(candidates) do if c.icon == own.icon then found = true end end
+        if not found then table.insert(candidates, 2, { icon = own.icon, label = "Current icon" }) end
+    end
     state.candidates = candidates
     local index
     if state.iconManual then
@@ -101,11 +127,24 @@ local function ShowMacro(m)
     if not m then d:Hide() return end
     d:Show()
     d.title:SetText(m.name)
-    local src = AS.SOURCES[m.src] or AS.SOURCES.Classic
-    d.source:SetText(("|cff%s%s|r  -  %s"):format(src.color, src.label, m.category))
-    d.desc:SetText(m.desc or "")
+    local own = m.own
+    if own then
+        local slot = own.index - (own.perCharacter and OWN_LIMIT.Account or 0)
+        d.source:SetText(("|cffffd100%s macro|r  -  slot %d of %d"):format(m.category, slot, OWN_LIMIT[m.category]))
+        d.desc:SetText(own.perCharacter and "Only this character has this macro. Drag it from the list onto an action bar."
+            or "Every character on your account shares this macro. Drag it from the list onto an action bar.")
+    else
+        local src = AS.SOURCES[m.src] or AS.SOURCES.Classic
+        d.source:SetText(("|cff%s%s|r  -  %s"):format(src.color, src.label, m.category))
+        d.desc:SetText(m.desc or "")
+    end
+    d.createChar:SetShown(not own)
+    d.createAcct:SetShown(not own)
+    d.save:SetShown(own and true or false)
+    d.delete:SetShown(own and true or false)
     d.nameBox:SetText(m.name)
-    state.iconManual = false
+    state.iconManual = own and true or false
+    state.icon = own and own.icon
     d.body:SetText(m.body)
     d.body:SetCursorPosition(0)
     UpdateDetailStatus()
@@ -123,6 +162,66 @@ local function DoCreate(perCharacter)
     ClearCursor()
     PickupMacro(index)
     if MacroFrame and MacroFrame:IsShown() and MacroFrame_Update then MacroFrame_Update() end
+end
+
+-- Own macros are addressed by slot, and slots shift when anything else edits
+-- macros. Make sure the slot still holds the macro the panel was opened on.
+local function OwnStillThere(own)
+    if GetMacroInfo(own.index) == own.name then return true end
+    AS.Print("|cffff6060That macro changed outside Arcane Shortcuts. Select it again.|r")
+    UpdateList()
+end
+
+-- After a save or delete: refresh the list and select the macro in `index`,
+-- or the first macro in the category if that slot is gone.
+local function RefreshOwn(index)
+    UpdateCategoryCounts()
+    local macros = MacrosFor(state.category)
+    local pick = macros[1]
+    for _, m in ipairs(macros) do if m.own.index == index then pick = m end end
+    ShowMacro(pick)
+    UpdateList()
+    if MacroFrame and MacroFrame:IsShown() and MacroFrame_Update then MacroFrame_Update() end
+end
+
+local function DoSave()
+    local own = state.macro and state.macro.own
+    if not own or not OwnStillThere(own) then return end
+    local d = frame.detail
+    local index, err = AS:SaveMacro(own.index, d.nameBox:GetText(), d.body:GetText() or "", state.icon)
+    if not index then
+        AS.Print("|cffff6060" .. err .. "|r")
+        return
+    end
+    AS.Print(("Saved macro |cffffd100%s|r."):format(d.nameBox:GetText()))
+    RefreshOwn(index)
+end
+
+StaticPopupDialogs.ARCANESHORTCUTS_DELETE = {
+    text = "Delete the macro \"%s\"? This can't be undone.",
+    button1 = YES or "Yes",
+    button2 = NO or "No",
+    OnAccept = function(_, own)
+        if not OwnStillThere(own) then return end
+        local ok, err = AS:RemoveMacro(own.index)
+        if not ok then
+            AS.Print("|cffff6060" .. err .. "|r")
+            return
+        end
+        AS.Print(("Deleted macro |cffffd100%s|r."):format(own.name))
+        RefreshOwn(own.index)
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+}
+
+local function DoDelete()
+    local own = state.macro and state.macro.own
+    if not own then return end
+    local popup = StaticPopup_Show("ARCANESHORTCUTS_DELETE", own.name)
+    if popup then popup.data = own end
 end
 
 local function BuildDetail()
@@ -239,6 +338,21 @@ local function BuildDetail()
     d.createAcct:SetText("Create (Account)")
     d.createAcct:SetScript("OnClick", function() DoCreate(false) end)
 
+    -- Shown instead of the Create buttons for the player's own macros.
+    d.save = CreateFrame("Button", nil, d, "UIPanelButtonTemplate")
+    d.save:SetSize(170, 24)
+    d.save:SetPoint("BOTTOMLEFT", 10, 10)
+    d.save:SetText("Save Changes")
+    d.save:SetScript("OnClick", DoSave)
+    d.save:Hide()
+
+    d.delete = CreateFrame("Button", nil, d, "UIPanelButtonTemplate")
+    d.delete:SetSize(170, 24)
+    d.delete:SetPoint("LEFT", d.save, "RIGHT", 8, 0)
+    d.delete:SetText("Delete")
+    d.delete:SetScript("OnClick", DoDelete)
+    d.delete:Hide()
+
     local reset = CreateFrame("Button", nil, d, "UIPanelButtonTemplate")
     reset:SetSize(80, 22)
     reset:SetPoint("BOTTOMRIGHT", d.createAcct, "TOPRIGHT", 0, 6)
@@ -282,9 +396,9 @@ end
 ---------------------------------------------------------------------------
 -- Macro list
 ---------------------------------------------------------------------------
-local function UpdateList()
+function UpdateList()
     local list = frame.list
-    local macros = state.category and AS:GetMacros(state.category.class, state.category.name) or {}
+    local macros = state.category and MacrosFor(state.category) or {}
     for i, m in ipairs(macros) do
         local row = list.rows[i]
         if not row then
@@ -319,20 +433,43 @@ local function UpdateList()
             row.desc:SetWordWrap(false)
             row.desc:SetTextColor(0.7, 0.7, 0.7)
             row:SetScript("OnClick", function(self) ShowMacro(self.macro) UpdateList() end)
+            -- Own macros can be dragged straight onto an action bar.
+            row:RegisterForDrag("LeftButton")
+            row:SetScript("OnDragStart", function(self)
+                local own = self.macro and self.macro.own
+                if own and not InCombatLockdown() then PickupMacro(own.index) end
+            end)
             list.rows[i] = row
         end
         row.macro = m
         local status = AS:Analyze(m.body, m.optional)
         row.dot:SetVertexColor(unpack(STATUS_DOT[status]))
-        row.icon:SetTexture(PreviewIcon(m.body))
-        local src = AS.SOURCES[m.src] or AS.SOURCES.Classic
-        row.name:SetText(("%s  |cff%s%s|r"):format(m.name, src.color, m.src == "Retail" and "Wowhead" or "Classic"))
-        row.desc:SetText(m.desc or "")
-        row.sel:SetShown(state.macro == m)
+        if m.own then
+            local icon = m.own.icon
+            row.icon:SetTexture((not icon or icon == AS.DYNAMIC_ICON) and PreviewIcon(m.body) or icon)
+            row.name:SetText(m.name)
+            -- First line that isn't #showtooltip or similar, as a summary.
+            local summary
+            for line in m.body:gmatch("[^\n]+") do
+                if not summary and not line:find("^%s*#") then summary = line end
+            end
+            row.desc:SetText(summary or "")
+        else
+            row.icon:SetTexture(PreviewIcon(m.body))
+            local src = AS.SOURCES[m.src] or AS.SOURCES.Classic
+            row.name:SetText(("%s  |cff%s%s|r"):format(m.name, src.color, m.src == "Retail" and "Wowhead" or "Classic"))
+            row.desc:SetText(m.desc or "")
+        end
+        row.sel:SetShown(SameMacro(state.macro, m))
         row:Show()
     end
     for i = #macros + 1, #list.rows do list.rows[i]:Hide() end
     list.content:SetHeight(math.max(1, #macros * ROW_H))
+    local cat = state.category
+    list.empty:SetShown(#macros == 0 and cat and cat.class == OWN or false)
+    if cat and cat.class == OWN then
+        list.empty:SetText(("You have no %s macros yet.\n\nPick one from a class list and click Create (%s)."):format(cat.name:lower(), cat.name))
+    end
 end
 
 local function BuildList()
@@ -346,7 +483,11 @@ local function BuildList()
     local content = CreateFrame("Frame", nil, scroll)
     content:SetSize(292, 1)
     scroll:SetScrollChild(content)
-    frame.list = { panel = p, scroll = scroll, content = content, rows = {} }
+    local empty = p:CreateFontString(nil, "OVERLAY", "GameFontDisable")
+    empty:SetPoint("TOPLEFT", 16, -20)
+    empty:SetPoint("RIGHT", -16, 0)
+    empty:SetJustifyH("CENTER")
+    frame.list = { panel = p, scroll = scroll, content = content, rows = {}, empty = empty }
 end
 
 ---------------------------------------------------------------------------
@@ -359,19 +500,31 @@ local function SelectCategory(cat)
         b.sel:SetShown(b.cat and b.cat.class == cat.class and b.cat.name == cat.name)
     end
     frame.list.scroll:SetVerticalScroll(0)
-    local first = AS:GetMacros(cat.class, cat.name)[1]
+    local first = MacrosFor(cat)[1]
     ShowMacro(first)
     UpdateList()
 end
 
+function UpdateCategoryCounts()
+    for _, b in ipairs(frame.catButtons) do
+        if b:IsShown() and b.cat then
+            local n = #MacrosFor(b.cat)
+            b.count:SetText(b.cat.class == OWN and ("%d/%d"):format(n, OWN_LIMIT[b.cat.name]) or n)
+        end
+    end
+end
+
 local function SelectClass(class)
     state.class = class
-    AS.db.lastClass = class
     for _, b in ipairs(frame.classButtons) do
         b:SetAlpha(b.class == class and 1 or 0.45)
         b.ring:SetShown(b.class == class)
     end
-    frame.classLabel:SetText(("|c%s%s|r macros"):format(ClassColor(class), LocalizedClass(class)))
+    if class == OWN then
+        frame.classLabel:SetText("Your macros")
+    else
+        frame.classLabel:SetText(("|c%s%s|r macros"):format(ClassColor(class), LocalizedClass(class)))
+    end
 
     local cats = CategoriesFor(class)
     for i, cat in ipairs(cats) do
@@ -393,10 +546,10 @@ local function SelectClass(class)
         end
         b.cat = cat
         b.text:SetText(cat.name)
-        b.count:SetText(#AS:GetMacros(cat.class, cat.name))
         b:Show()
     end
     for i = #cats + 1, #frame.catButtons do frame.catButtons[i]:Hide() end
+    UpdateCategoryCounts()
 
     local want = AS.db.lastCategory
     local pick = cats[1]
@@ -409,7 +562,7 @@ local function BuildClassBar()
     for i, class in ipairs(AS.CLASS_ORDER) do
         local b = CreateFrame("Button", nil, frame)
         b:SetSize(34, 34)
-        b:SetPoint("TOPLEFT", frame, "TOPLEFT", 14 + (i - 1) * 40, -30)
+        b:SetPoint("TOPLEFT", frame, "TOPLEFT", 66 + (i - 1) * 40, -30)
         b.class = class
         local tex = b:CreateTexture(nil, "ARTWORK")
         tex:SetAllPoints()
@@ -431,6 +584,31 @@ local function BuildClassBar()
         b:SetScript("OnLeave", GameTooltip_Hide)
         frame.classButtons[i] = b
     end
+
+    -- "My Macros": the account and character macros the player already has.
+    local own = CreateFrame("Button", nil, frame)
+    own:SetSize(34, 34)
+    own:SetPoint("TOPLEFT", frame, "TOPLEFT", 14, -30)
+    own.class = OWN
+    local tex = own:CreateTexture(nil, "ARTWORK")
+    tex:SetAllPoints()
+    tex:SetTexture("Interface\\Icons\\INV_Misc_Note_01")
+    tex:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+    own.ring = own:CreateTexture(nil, "OVERLAY")
+    own.ring:SetPoint("TOPLEFT", -4, 4)
+    own.ring:SetPoint("BOTTOMRIGHT", 4, -4)
+    own.ring:SetTexture("Interface\\Buttons\\CheckButtonHilight")
+    own.ring:SetBlendMode("ADD")
+    own:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+    own:SetScript("OnClick", function() SelectClass(OWN) end)
+    own:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+        GameTooltip:SetText("My Macros")
+        GameTooltip:AddLine("See, edit and delete the account and character macros you already have.", 1, 1, 1, true)
+        GameTooltip:Show()
+    end)
+    own:SetScript("OnLeave", GameTooltip_Hide)
+    frame.classButtons[#frame.classButtons + 1] = own
 
     frame.classLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     frame.classLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 14, -74)
@@ -478,19 +656,24 @@ local function Build()
     BuildList()
     BuildDetail()
 
-    -- Refresh "known spell" dots when the spellbook or bags change.
+    -- Refresh "known spell" dots when the spellbook or bags change, and the
+    -- overview when macros change, here or in the game's macro window.
     frame:RegisterEvent("SPELLS_CHANGED")
+    frame:RegisterEvent("UPDATE_MACROS")
     pcall(frame.RegisterEvent, frame, "BAG_UPDATE_DELAYED")
-    frame:SetScript("OnEvent", function(self)
-        if self:IsShown() then UpdateList() if state.macro then UpdateDetailStatus() end end
+    frame:SetScript("OnEvent", function(self, event)
+        if not self:IsShown() then return end
+        if event == "UPDATE_MACROS" then
+            if state.class == OWN then UpdateCategoryCounts() UpdateList() end
+            return
+        end
+        UpdateList()
+        if state.macro then UpdateDetailStatus() end
     end)
-    frame:SetScript("OnShow", function() UpdateList() end)
+    frame:SetScript("OnShow", function() UpdateCategoryCounts() UpdateList() end)
 
-    local _, playerClass = UnitClass("player")
-    local start = AS.db.lastClass or playerClass
-    if not AS.CATEGORIES[start] then start = playerClass end
-    if not AS.CATEGORIES[start] then start = AS.CLASS_ORDER[1] end
-    SelectClass(start)
+    -- Each session opens on the player's own macros.
+    SelectClass(OWN)
 end
 
 function AS:Toggle()
@@ -514,9 +697,6 @@ function AS:UpdateMinimapButton()
 end
 
 function AS:OnLoad()
-    -- Open on your own class the first time each session.
-    local _, playerClass = UnitClass("player")
-    self.db.lastClass = playerClass
 
     mini = CreateFrame("Button", "ArcaneShortcutsMinimapButton", Minimap)
     mini:SetSize(31, 31)

@@ -2,7 +2,7 @@
 
 **Ready-to-use macros for every class and spec in WoW Forever. Pick one, tweak it, and put it on your action bar in two clicks.**
 
-Writing macros by hand is fiddly. You have to remember the conditionals, fit everything into 255 characters, and spell every name exactly right. Arcane Shortcuts gives you a library of about 245 tested macros for all 9 classes. You can read, edit and create them without leaving the game.
+Writing macros by hand is fiddly. You have to remember the conditionals, fit everything into 255 characters, and spell every name exactly right. Arcane Shortcuts gives you a library of over 250 tested macros for all 9 classes. You can read, edit and create them without leaving the game.
 
 ![The Arcane Shortcuts window showing the Warrior General macros, with the Charge/Intercept macro open for editing](images/warrior-example.png)
 
@@ -22,6 +22,8 @@ Writing macros by hand is fiddly. You have to remember the conditionals, fit eve
 - **Choose an icon.** Left-click the icon to step through the icons of the spells and items in the macro, or keep the dynamic **?** icon so the button changes with the macro.
 - **Create with one click.** Choose **Create (Character)** or **Create (Account)**. The macro is saved and lands on your cursor, so you can drop it straight onto an action bar.
 - **Safe to click again.** If a macro with the same name already exists, it is updated instead of duplicated.
+- **See the macros you already have.** The **My Macros** button (the note icon at the top left, before the class icons) lists your account and character macros, with how many slots each list has left. Pick one to check its status, edit its name, text or icon and save it, or delete it. Drag a macro from the list onto an action bar.
+- **Up to date with WoW Forever.** Includes macros for Forever's new abilities, such as the paladin taunt (Seal of Fury), Holy Strike, Primal Bite, Shifting Power, Spearing Strike, Penance, Riptide, Lava Burst and Sniper Shot.
 - **Classic and Wowhead macros.** Macros marked **Classic** are Classic/TBC staples. Macros marked **Wowhead** are adapted from Wowhead's spec guides and rewritten for the Classic client.
 
 ---
@@ -29,12 +31,14 @@ Writing macros by hand is fiddly. You have to remember the conditionals, fit eve
 ## How to use
 
 1. Type **`/as`** or click the book icon on your minimap.
-2. The window opens on your own class. Click another class icon at the top to browse its macros.
+2. The window opens on **My Macros**, your own account and character macros. Click a class icon at the top to browse its ready-made macros.
 3. Choose a category on the left (General, a spec, or All Classes), then click a macro.
 4. Read the description, check the colored status and edit the text if you want.
 5. Click **Create (Character)** or **Create (Account)**, then drop the macro on your action bar.
 
 Click **Reset** to undo your edits and get the original macro back.
+
+To manage the macros you already have, click the **My Macros** note icon at the top left. The window opens there by default. Choose **Account** or **Character**, pick a macro, then click **Save Changes** or **Delete**. Deleting asks you to confirm first.
 
 ![The Hunter General macros, with the Feign Death macro open and marked Partly available](images/hunter-example.png)
 

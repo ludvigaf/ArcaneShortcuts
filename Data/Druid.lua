@@ -165,11 +165,11 @@ AS:AddMacros("DRUID", "Feral (Cat)", {
     },
     {
         name = "Cat Burst",
-        desc = "Adapted from Wowhead's Berserk/Tiger's Fury opener: Tiger's Fury, racial and trinkets.",
+        desc = "Adapted from Wowhead's burst opener. Forever removed Tiger's Fury, so this uses Shifting Power (Cat Form talent, 40 Energy; not at full Energy), plus racial and trinkets.",
         src = "Retail",
         body = [=[
-#showtooltip Tiger's Fury
-/cast Tiger's Fury
+#showtooltip Shifting Power
+/cast Shifting Power
 /cast Berserking
 /use 13
 /use 14]=],
@@ -180,6 +180,14 @@ AS:AddMacros("DRUID", "Feral (Cat)", {
         body = [=[
 #showtooltip Faerie Fire (Feral)
 /cast [@mouseover,harm,nodead][] Faerie Fire (Feral)]=],
+    },
+    {
+        name = "Primal Bite",
+        desc = "Primal Bite, Forever's renamed Mangle, with auto-attack. Works in Cat Form and Bear Form.",
+        body = [=[
+#showtooltip Primal Bite
+/startattack
+/cast Primal Bite]=],
     },
 })
 
@@ -302,5 +310,12 @@ AS:AddMacros("DRUID", "Restoration", {
         body = [=[
 #showtooltip Tree of Life
 /cast !Tree of Life]=],
+    },
+    {
+        name = "Wild Growth MO",
+        desc = "Wild Growth on your mouseover, or your target, or yourself. Heals the group around them.",
+        body = [=[
+#showtooltip Wild Growth
+/cast [@mouseover,help,nodead][help,nodead][@player] Wild Growth]=],
     },
 })

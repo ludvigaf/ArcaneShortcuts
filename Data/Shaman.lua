@@ -59,6 +59,13 @@ AS:AddMacros("SHAMAN", "General", {
 #showtooltip
 /cast [mod:shift] Water Shield; Lightning Shield]=],
     },
+    {
+        name = "Totemic Recall",
+        desc = "Recalls your totems and gives back some of their mana. Use it after a fight.",
+        body = [=[
+#showtooltip Totemic Recall
+/cast Totemic Recall]=],
+    },
 })
 
 AS:AddMacros("SHAMAN", "Elemental", {
@@ -89,6 +96,13 @@ AS:AddMacros("SHAMAN", "Elemental", {
         body = [=[
 #showtooltip Flame Shock
 /cast [@mouseover,harm,nodead][] Flame Shock]=],
+    },
+    {
+        name = "Lava Burst MO",
+        desc = "Lava Burst on your mouseover, or your target. Best right after Flame Shock.",
+        body = [=[
+#showtooltip Lava Burst
+/cast [@mouseover,harm,nodead][] Lava Burst]=],
     },
 })
 
@@ -186,5 +200,12 @@ AS:AddMacros("SHAMAN", "Restoration", {
 /use 13
 /use 14
 /cast Mana Tide Totem]=],
+    },
+    {
+        name = "Riptide MO",
+        desc = "Riptide on your mouseover, or your target, or yourself.",
+        body = [=[
+#showtooltip Riptide
+/cast [@mouseover,help,nodead][help,nodead][@player] Riptide]=],
     },
 })

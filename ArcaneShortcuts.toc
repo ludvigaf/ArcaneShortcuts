@@ -2,7 +2,7 @@
 ## Title: |cff8f6cffArcane|r Shortcuts
 ## Notes: Ready-to-use macros for every class and spec in WoW Forever. Type /as to open.
 ## Author: ArcaneShortcuts
-## Version: 1.0.0
+## Version: 1.1.0
 ## IconTexture: Interface\Icons\INV_Misc_Book_11
 ## SavedVariables: ArcaneShortcutsDB
 

@@ -136,14 +136,6 @@ AS:AddMacros("WARLOCK", "Demonology", {
 /cast Blood Fury
 /cast Shadow Bolt]=],
     },
-    {
-        name = "Shadowfury",
-        desc = "From Wowhead: Shadowfury at your cursor.",
-        src = "Retail",
-        body = [=[
-#showtooltip Shadowfury
-/cast [@cursor] Shadowfury]=],
-    },
 })
 
 AS:AddMacros("WARLOCK", "Destruction", {

@@ -204,6 +204,14 @@ AS:AddMacros("HUNTER", "Marksmanship", {
 /petattack
 /cast [@mouseover,harm,nodead][] Arcane Shot]=],
     },
+    {
+        name = "Sniper Shot",
+        desc = "Marksmanship's 31-point talent as an opener: sends the pet in and fires Sniper Shot (45 yards; +10 yards on your next 3 shots).",
+        body = [=[
+#showtooltip Sniper Shot
+/petattack
+/cast Sniper Shot]=],
+    },
 })
 
 AS:AddMacros("HUNTER", "Survival", {

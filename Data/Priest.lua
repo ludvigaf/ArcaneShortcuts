@@ -117,6 +117,13 @@ AS:AddMacros("PRIEST", "Discipline", {
 /stopcasting
 /cast [@mouseover,help,nodead][] Pain Suppression]=],
     },
+    {
+        name = "Penance MO",
+        desc = "Penance on your mouseover, or your target: heals a friend or damages an enemy.",
+        body = [=[
+#showtooltip Penance
+/cast [@mouseover,exists,nodead][] Penance]=],
+    },
 })
 
 AS:AddMacros("PRIEST", "Holy", {
@@ -205,5 +212,12 @@ AS:AddMacros("PRIEST", "Shadow", {
 /use 14
 /cast Berserking
 /cast Shadowfiend]=],
+    },
+    {
+        name = "SW:D MO",
+        desc = "Shadow Word: Death on your mouseover, or your target. Use it to finish off low-health enemies.",
+        body = [=[
+#showtooltip Shadow Word: Death
+/cast [@mouseover,harm,nodead][] Shadow Word: Death]=],
     },
 })

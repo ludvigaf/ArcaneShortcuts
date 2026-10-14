@@ -120,6 +120,14 @@ AS:AddMacros("WARRIOR", "Arms", {
 #showtooltip
 /cast [stance:3] Whirlwind; Thunder Clap]=],
     },
+    {
+        name = "Spearing Strike",
+        desc = "Spearing Strike needs Battle Stance on Forever. Switches to Battle Stance first; press again to strike.",
+        body = [=[
+#showtooltip Spearing Strike
+/startattack
+/cast [nostance:1] Battle Stance; Spearing Strike]=],
+    },
 })
 
 AS:AddMacros("WARRIOR", "Fury", {

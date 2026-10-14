@@ -73,6 +73,14 @@ AS:AddMacros("PALADIN", "General", {
 #showtooltip
 /cast [mod:shift,@mouseover,help,nodead][mod:shift] Blessing of Wisdom; [mod:ctrl,@mouseover,help,nodead][mod:ctrl] Blessing of Kings; [@mouseover,help,nodead][] Blessing of Might]=],
     },
+    {
+        name = "Holy Strike",
+        desc = "Holy Strike with auto-attack. Forever's core strike for Holy and Retribution paladins.",
+        body = [=[
+#showtooltip Holy Strike
+/startattack
+/cast Holy Strike]=],
+    },
 })
 
 AS:AddMacros("PALADIN", "Holy", {
@@ -143,11 +151,13 @@ AS:AddMacros("PALADIN", "Protection", {
 /cast !Righteous Fury]=],
     },
     {
-        name = "Taunt (RD)",
-        desc = "Righteous Defense on your mouseover friend, or on your target's target.",
+        name = "Fury Taunt",
+        desc = "Forever's paladin taunt: judges Seal of Fury on your mouseover or target (Judgement of Fury taunts, 10 yards), then puts the seal back up. Press again if no seal was active.",
         body = [=[
-#showtooltip Righteous Defense
-/cast [@mouseover,help,nodead][@targettarget,help,nodead] Righteous Defense]=],
+#showtooltip Judgement
+/startattack [@mouseover,harm,nodead][]
+/cast [@mouseover,harm,nodead][] Judgement
+/cast Seal of Fury]=],
     },
     {
         name = "Consecrate",
