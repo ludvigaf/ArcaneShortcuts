@@ -11,7 +11,7 @@ Writing macros by hand is fiddly. You have to remember the conditionals, fit eve
 ## Features
 
 - **Macros for every class and spec.** Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock and Druid each have a General list and a list for every talent spec. Druids get separate Cat and Bear lists.
-- **An "All Classes" list.** Includes trinkets, mount, potions, bandages, eat & drink, focus, raid markers, sell greys and more.
+- **An "All Classes" list.** Includes trinkets, mount, potions, bandages, eat & drink, focus, raid markers, sell greys, a Shoot/Throw button that fires whichever bow, crossbow, gun or thrown weapon you have equipped, and more.
 - **Each macro is explained.** Every macro has a short description of what it does and when to use it.
 - **Checked against your character.** Each macro gets a colored dot:
   - 🟢 **Ready**: you know every spell in it.
@@ -59,6 +59,7 @@ You can drag the minimap button around the edge of the minimap.
 - **Character or Account?** Character macros exist only on the character you're playing. Account macros are shared by all your characters. Both have a limited number of slots, and the addon tells you if they're full.
 - **"Partly available" isn't an error.** You may not have every spell yet, because some come from a trainer at a higher level and others from a talent. The macro still works for the parts you do have, and the missing spells start working as soon as you learn them.
 - **Racials and pet abilities are optional.** Cooldown macros may include racials like Blood Fury or Berserking, and hunter macros may include abilities only some pets have. A missing one doesn't count against the status.
+- **Shoot/Throw always shows as Ready.** It lists all four ranged attacks and no character knows them all, so the status can't tell you whether your class can use it. It doesn't cover wands or a hunter's Auto Shot.
 
 ---
 
