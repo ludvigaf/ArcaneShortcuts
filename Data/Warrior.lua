@@ -169,6 +169,14 @@ AS:AddMacros("WARRIOR", "Fury", {
 /cast Cleave
 /cast Bloodthirst]=],
     },
+    {
+        name = "Reckless Swings",
+        desc = "Forever Fury talent: your next 4 melee attacks each give 5 extra Rage for 8 seconds, at the cost of 25% of your base health. Also starts auto-attack.",
+        body = [=[
+#showtooltip Reckless Swings
+/startattack
+/cast Reckless Swings]=],
+    },
 })
 
 AS:AddMacros("WARRIOR", "Protection", {

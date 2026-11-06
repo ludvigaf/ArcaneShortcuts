@@ -10,13 +10,6 @@ AS:AddMacros("DRUID", "General", {
 /cast [swimming] !Aquatic Form; [outdoors] !Travel Form; !Cat Form]=],
     },
     {
-        name = "Travel+Flight",
-        desc = "Travel macro for zones where you can fly: Flight Form if flyable, otherwise Aquatic, Travel or Cat Form.",
-        body = [=[
-#showtooltip
-/cast [swimming] !Aquatic Form; [flyable,outdoors,nocombat] !Flight Form; [outdoors] !Travel Form; !Cat Form]=],
-    },
-    {
         name = "Innervate",
         desc = "From Wowhead: Innervate on your mouseover healer, your target, or yourself.",
         src = "Retail",
@@ -120,15 +113,6 @@ AS:AddMacros("DRUID", "Balance", {
 /cast Berserking
 /cast Starfire]=],
     },
-    {
-        name = "Treants",
-        desc = "Adapted from Wowhead: Force of Nature with trinkets.",
-        src = "Retail",
-        body = [=[
-#showtooltip Force of Nature
-/use 13
-/cast Force of Nature]=],
-    },
 })
 
 AS:AddMacros("DRUID", "Feral (Cat)", {
@@ -165,7 +149,7 @@ AS:AddMacros("DRUID", "Feral (Cat)", {
     },
     {
         name = "Cat Burst",
-        desc = "Adapted from Wowhead's burst opener. Forever removed Tiger's Fury, so this uses Shifting Power (Cat Form talent, 40 Energy; not at full Energy), plus racial and trinkets.",
+        desc = "Adapted from Wowhead's burst opener. Forever removed Tiger's Fury, so this uses Shifting Power (30-point Feral talent, Cat Form: 40 Energy for mana, not at full Energy), plus racial and trinkets.",
         src = "Retail",
         body = [=[
 #showtooltip Shifting Power
@@ -176,18 +160,10 @@ AS:AddMacros("DRUID", "Feral (Cat)", {
     },
     {
         name = "Faerie Fire",
-        desc = "Faerie Fire (Feral) on your mouseover or target, castable in form.",
+        desc = "Faerie Fire on your mouseover or target. Forever has no separate Feral version of this spell.",
         body = [=[
-#showtooltip Faerie Fire (Feral)
-/cast [@mouseover,harm,nodead][] Faerie Fire (Feral)]=],
-    },
-    {
-        name = "Primal Bite",
-        desc = "Primal Bite, Forever's renamed Mangle, with auto-attack. Works in Cat Form and Bear Form.",
-        body = [=[
-#showtooltip Primal Bite
-/startattack
-/cast Primal Bite]=],
+#showtooltip Faerie Fire
+/cast [@mouseover,harm,nodead][] Faerie Fire]=],
     },
 })
 
@@ -248,6 +224,22 @@ AS:AddMacros("DRUID", "Feral (Bear)", {
 /cast Maul
 /cast Swipe]=],
     },
+    {
+        name = "Primal Bite",
+        desc = "Primal Bite (Forever's renamed Mangle, now a 30-point Feral talent) with auto-attack. Bear Form only, with high threat.",
+        body = [=[
+#showtooltip Primal Bite
+/startattack
+/cast Primal Bite]=],
+    },
+    {
+        name = "Lacerate",
+        desc = "Lacerate (Feral talent) with auto-attack: a stacking bleed with high threat, up to 5 times on a target.",
+        body = [=[
+#showtooltip Lacerate
+/startattack
+/cast Lacerate]=],
+    },
 })
 
 AS:AddMacros("DRUID", "Restoration", {
@@ -258,13 +250,6 @@ AS:AddMacros("DRUID", "Restoration", {
         body = [=[
 #showtooltip Rejuvenation
 /cast [@mouseover,help,nodead][] Rejuvenation]=],
-    },
-    {
-        name = "Lifebloom MO",
-        desc = "Lifebloom on your mouseover, or your target.",
-        body = [=[
-#showtooltip Lifebloom
-/cast [@mouseover,help,nodead][] Lifebloom]=],
     },
     {
         name = "Regrowth MO",
@@ -282,7 +267,7 @@ AS:AddMacros("DRUID", "Restoration", {
     },
     {
         name = "Swiftmend MO",
-        desc = "Swiftmend on your mouseover, or your target.",
+        desc = "Swiftmend on your mouseover, or your target. They must have your Rejuvenation or Regrowth.",
         body = [=[
 #showtooltip Swiftmend
 /cast [@mouseover,help,nodead][] Swiftmend]=],
@@ -305,15 +290,8 @@ AS:AddMacros("DRUID", "Restoration", {
 /cast [@player] Innervate]=],
     },
     {
-        name = "Tree",
-        desc = "Enters Tree of Life form without ever cancelling it.",
-        body = [=[
-#showtooltip Tree of Life
-/cast !Tree of Life]=],
-    },
-    {
         name = "Wild Growth MO",
-        desc = "Wild Growth on your mouseover, or your target, or yourself. Heals the group around them.",
+        desc = "Wild Growth on your mouseover, or your target, or yourself. Heals their party (3 second cast).",
         body = [=[
 #showtooltip Wild Growth
 /cast [@mouseover,help,nodead][help,nodead][@player] Wild Growth]=],

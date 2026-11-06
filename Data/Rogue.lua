@@ -90,6 +90,21 @@ AS:AddMacros("ROGUE", "General", {
 #showtooltip Gouge
 /cast [@focus,harm,nodead][@mouseover,harm,nodead][] Gouge]=],
     },
+    {
+        name = "Shank",
+        desc = "Shank with auto-attack: a cheap off-hand strike that gives 25 Energy and cannot miss. Assassination rogues with Venom also boost their poisons with it.",
+        body = [=[
+#showtooltip Shank
+/startattack
+/cast Shank]=],
+    },
+    {
+        name = "Redirect",
+        desc = "Takes your combo points off the current target and stores them for 15 seconds. The next non-player enemy you hit gets them.",
+        body = [=[
+#showtooltip Redirect
+/cast Redirect]=],
+    },
 })
 
 AS:AddMacros("ROGUE", "Assassination", {
@@ -171,23 +186,6 @@ AS:AddMacros("ROGUE", "Subtlety", {
 /cast Cheap Shot]=],
     },
     {
-        name = "Shadowstep MO",
-        desc = "From Wowhead: Shadowstep to your mouseover, or your target.",
-        src = "Retail",
-        body = [=[
-#showtooltip Shadowstep
-/cast [@mouseover,exists,nodead][] Shadowstep]=],
-    },
-    {
-        name = "Step + Kick",
-        desc = "From Wowhead's PvP section: Shadowstep to your focus and kick it.",
-        src = "Retail",
-        body = [=[
-#showtooltip Kick
-/cast [@focus,harm,nodead] Shadowstep
-/cast [@focus,harm,nodead] Kick]=],
-    },
-    {
         name = "Sap Enemy",
         desc = "From Wowhead's PvP section: targets the nearest enemy player and saps them.",
         src = "Retail",
@@ -205,5 +203,20 @@ AS:AddMacros("ROGUE", "Subtlety", {
 /stopattack
 /cast Preparation
 /cast Vanish]=],
+    },
+    {
+        name = "Death Mark",
+        desc = "Death Mark (Subtlety talent) on your mouseover or target: a finishing move that stores damage and releases it after 6 seconds. Garrote and Rupture store at twice the rate.",
+        body = [=[
+#showtooltip Death Mark
+/cast [@mouseover,harm,nodead][] Death Mark]=],
+    },
+    {
+        name = "Ghostly Ambush",
+        desc = "Ghostly Strike, then Ambush on the next press. Ghostly Strike lets your next Ambush or Garrote within 7 seconds skip the Stealth requirement.",
+        body = [=[
+#showtooltip
+/startattack
+/castsequence reset=7 Ghostly Strike, Ambush]=],
     },
 })

@@ -81,6 +81,13 @@ AS:AddMacros("PALADIN", "General", {
 /startattack
 /cast Holy Strike]=],
     },
+    {
+        name = "Voice of Truth",
+        desc = "Immunity to Silence and Interrupt effects for 6 seconds. Press it just before a cast you can't afford to lose.",
+        body = [=[
+#showtooltip Voice of Truth
+/cast Voice of Truth]=],
+    },
 })
 
 AS:AddMacros("PALADIN", "Holy", {
@@ -123,18 +130,23 @@ AS:AddMacros("PALADIN", "Holy", {
 /startattack
 /cast Judgement]=],
     },
+    {
+        name = "Oath of Light",
+        desc = "Swears Oath of Light (Holy talent) on your mouseover, your target, or yourself. It boosts your Holy Light, Flash of Light and Holy Shock on them for 5 minutes.",
+        body = [=[
+#showtooltip Oath of Light
+/cast [@mouseover,help,nodead][help,nodead][@player] Oath of Light]=],
+    },
+    {
+        name = "Light's Vigil MO",
+        desc = "Light's Vigil on your mouseover or target. Your next Holy Shock on them has no cooldown and also heals their party.",
+        body = [=[
+#showtooltip Light's Vigil
+/cast [@mouseover,help,nodead][] Light's Vigil]=],
+    },
 })
 
 AS:AddMacros("PALADIN", "Protection", {
-    {
-        name = "Prot Opener",
-        desc = "From Wowhead: trinket, then Avenging Wrath. Use it at the start of the pull.",
-        src = "Retail",
-        body = [=[
-#showtooltip Avenging Wrath
-/use 13
-/cast Avenging Wrath]=],
-    },
     {
         name = "Holy Shield",
         desc = "Holy Shield that also starts auto-attack.",
@@ -152,12 +164,11 @@ AS:AddMacros("PALADIN", "Protection", {
     },
     {
         name = "Fury Taunt",
-        desc = "Forever's paladin taunt: judges Seal of Fury on your mouseover or target (Judgement of Fury taunts, 10 yards), then puts the seal back up. Press again if no seal was active.",
+        desc = "Forever's paladin taunt: Judgement with Seal of Fury active taunts your mouseover or target for 3 seconds (10 yards). Judgement no longer consumes the Seal. Shift puts up Seal of Fury first.",
         body = [=[
 #showtooltip Judgement
 /startattack [@mouseover,harm,nodead][]
-/cast [@mouseover,harm,nodead][] Judgement
-/cast Seal of Fury]=],
+/cast [mod:shift] Seal of Fury; [@mouseover,harm,nodead][] Judgement]=],
     },
     {
         name = "Consecrate",
@@ -168,18 +179,25 @@ AS:AddMacros("PALADIN", "Protection", {
 /use 14
 /cast Consecration]=],
     },
+    {
+        name = "Hammer Righteous",
+        desc = "Hammer of the Righteous with auto-attack. Hits your target and up to 3 nearby enemies.",
+        body = [=[
+#showtooltip Hammer of the Righteous
+/startattack
+/cast Hammer of the Righteous]=],
+    },
 })
 
 AS:AddMacros("PALADIN", "Retribution", {
     {
         name = "Ret Burst",
-        desc = "From Wowhead: Avenging Wrath and both trinkets.",
-        src = "Retail",
+        desc = "Both trinkets, then Swift Judgement (Retribution talent), an extra Judgement that does not share a cooldown with your normal one.",
         body = [=[
-#showtooltip Avenging Wrath
-/cast Avenging Wrath
+#showtooltip Swift Judgement
 /use 13
-/use 14]=],
+/use 14
+/cast Swift Judgement]=],
     },
     {
         name = "Seal & Judge",
@@ -188,14 +206,6 @@ AS:AddMacros("PALADIN", "Retribution", {
 #showtooltip
 /startattack
 /castsequence reset=10 Seal of Command, Judgement]=],
-    },
-    {
-        name = "Crusader Strk",
-        desc = "Crusader Strike that also starts auto-attack.",
-        body = [=[
-#showtooltip Crusader Strike
-/startattack
-/cast Crusader Strike]=],
     },
     {
         name = "Hammer of Wrath",

@@ -25,10 +25,18 @@ end
 -- Pseudo-class for the "My Macros" overview of the player's own macros.
 local OWN = "OWN"
 local OWN_LIMIT = { Account = MAX_ACCOUNT_MACROS or 120, Character = MAX_CHARACTER_MACROS or 18 }
+-- The My Macros category that lists account and character macros together.
+local OVERVIEW = "Overview"
+local HEADER_H = 24
 
 local function MacrosFor(cat)
-    if cat.class == OWN then return AS:GetOwnMacros(cat.name == "Character") end
-    return AS:GetMacros(cat.class, cat.name)
+    if cat.class ~= OWN then return AS:GetMacros(cat.class, cat.name) end
+    if cat.name == "Character" then return AS:GetOwnMacros(true) end
+    local list = AS:GetOwnMacros(false)
+    if cat.name == OVERVIEW then
+        for _, m in ipairs(AS:GetOwnMacros(true)) do list[#list + 1] = m end
+    end
+    return list
 end
 
 -- Own macros are rebuilt on every refresh, so compare them by slot.
@@ -39,7 +47,7 @@ end
 
 local function CategoriesFor(class)
     if class == OWN then
-        return { { class = OWN, name = "Account" }, { class = OWN, name = "Character" } }
+        return { { class = OWN, name = OVERVIEW }, { class = OWN, name = "Account" }, { class = OWN, name = "Character" } }
     end
     local list = {}
     for _, c in ipairs(AS.CATEGORIES[class]) do list[#list + 1] = { class = class, name = c } end
@@ -398,13 +406,42 @@ end
 ---------------------------------------------------------------------------
 function UpdateList()
     local list = frame.list
-    local macros = state.category and MacrosFor(state.category) or {}
+    local cat = state.category
+    local macros = cat and MacrosFor(cat) or {}
+    local overview = cat and cat.class == OWN and cat.name == OVERVIEW
+    local y = 0
+
+    -- The overview splits the list with a header per macro type. Both headers
+    -- always show, so the free slots stay visible when a type has no macros.
+    local counts = { Account = 0, Character = 0 }
+    if overview then
+        for _, m in ipairs(macros) do counts[m.category] = counts[m.category] + 1 end
+    end
+    local function PlaceHeader(name)
+        local h, n = list.headers[name], counts[name]
+        local limit = OWN_LIMIT[name]
+        h:ClearAllPoints()
+        h:SetPoint("TOPLEFT", 0, -y)
+        h.count:SetText(("%d/%d  (%d free)"):format(n, limit, math.max(0, limit - n)))
+        h.note:SetShown(n == 0)
+        h:SetHeight(n == 0 and HEADER_H * 2 or HEADER_H)
+        h:Show()
+        y = y + h:GetHeight()
+    end
+    list.headers.Account:Hide()
+    list.headers.Character:Hide()
+    if overview then PlaceHeader("Account") end
+    local characterPlaced
+
     for i, m in ipairs(macros) do
+        if overview and m.category == "Character" and not characterPlaced then
+            PlaceHeader("Character")
+            characterPlaced = true
+        end
         local row = list.rows[i]
         if not row then
             row = CreateFrame("Button", nil, list.content)
             row:SetSize(292, ROW_H)
-            row:SetPoint("TOPLEFT", 0, -(i - 1) * ROW_H)
             row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
             row.sel = row:CreateTexture(nil, "BACKGROUND")
             row.sel:SetAllPoints()
@@ -441,6 +478,9 @@ function UpdateList()
             end)
             list.rows[i] = row
         end
+        row:ClearAllPoints()
+        row:SetPoint("TOPLEFT", 0, -y)
+        y = y + ROW_H
         row.macro = m
         local status = AS:Analyze(m.body, m.optional)
         row.dot:SetVertexColor(unpack(STATUS_DOT[status]))
@@ -463,11 +503,11 @@ function UpdateList()
         row.sel:SetShown(SameMacro(state.macro, m))
         row:Show()
     end
+    if overview and not characterPlaced then PlaceHeader("Character") end
     for i = #macros + 1, #list.rows do list.rows[i]:Hide() end
-    list.content:SetHeight(math.max(1, #macros * ROW_H))
-    local cat = state.category
-    list.empty:SetShown(#macros == 0 and cat and cat.class == OWN or false)
-    if cat and cat.class == OWN then
+    list.content:SetHeight(math.max(1, y))
+    list.empty:SetShown(#macros == 0 and cat and cat.class == OWN and not overview or false)
+    if cat and cat.class == OWN and not overview then
         list.empty:SetText(("You have no %s macros yet.\n\nPick one from a class list and click Create (%s)."):format(cat.name:lower(), cat.name))
     end
 end
@@ -487,7 +527,29 @@ local function BuildList()
     empty:SetPoint("TOPLEFT", 16, -20)
     empty:SetPoint("RIGHT", -16, 0)
     empty:SetJustifyH("CENTER")
-    frame.list = { panel = p, scroll = scroll, content = content, rows = {}, empty = empty }
+    frame.list = { panel = p, scroll = scroll, content = content, rows = {}, empty = empty, headers = {} }
+
+    for _, name in ipairs({ "Account", "Character" }) do
+        local h = CreateFrame("Frame", nil, content)
+        h:SetSize(292, HEADER_H)
+        local bg = h:CreateTexture(nil, "BACKGROUND")
+        bg:SetPoint("TOPLEFT")
+        bg:SetPoint("RIGHT")
+        bg:SetHeight(HEADER_H)
+        bg:SetColorTexture(1, 1, 1, 0.08)
+        local title = h:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        title:SetPoint("LEFT", bg, "LEFT", 6, 0)
+        title:SetText(name .. " macros")
+        h.count = h:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        h.count:SetPoint("RIGHT", bg, "RIGHT", -6, 0)
+        h.note = h:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+        h.note:SetPoint("TOPLEFT", bg, "BOTTOMLEFT", 6, -6)
+        h.note:SetPoint("RIGHT", -6, 0)
+        h.note:SetJustifyH("LEFT")
+        h.note:SetText(("None yet. Use Create (%s) on a class macro."):format(name))
+        h.note:SetWordWrap(false)
+        frame.list.headers[name] = h
+    end
 end
 
 ---------------------------------------------------------------------------
@@ -495,7 +557,7 @@ end
 ---------------------------------------------------------------------------
 local function SelectCategory(cat)
     state.category = cat
-    AS.db.lastCategory = cat.name
+    if cat.class ~= OWN then AS.db.lastCategory = cat.name end
     for _, b in ipairs(frame.catButtons) do
         b.sel:SetShown(b.cat and b.cat.class == cat.class and b.cat.name == cat.name)
     end
@@ -509,7 +571,8 @@ function UpdateCategoryCounts()
     for _, b in ipairs(frame.catButtons) do
         if b:IsShown() and b.cat then
             local n = #MacrosFor(b.cat)
-            b.count:SetText(b.cat.class == OWN and ("%d/%d"):format(n, OWN_LIMIT[b.cat.name]) or n)
+            local limit = b.cat.class == OWN and OWN_LIMIT[b.cat.name]
+            b.count:SetText(limit and ("%d/%d"):format(n, limit) or n)
         end
     end
 end
@@ -551,7 +614,8 @@ local function SelectClass(class)
     for i = #cats + 1, #frame.catButtons do frame.catButtons[i]:Hide() end
     UpdateCategoryCounts()
 
-    local want = AS.db.lastCategory
+    -- My Macros always opens on the overview; class lists reopen the last category.
+    local want = class ~= OWN and AS.db.lastCategory
     local pick = cats[1]
     for _, c in ipairs(cats) do if c.name == want then pick = c end end
     SelectCategory(pick)

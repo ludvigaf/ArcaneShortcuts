@@ -60,19 +60,25 @@ AS:AddMacros("PRIEST", "General", {
 /cast [@mouseover,help,nodead][help,nodead][@player] Fear Ward]=],
     },
     {
-        name = "Mass Dispel",
-        desc = "From Wowhead: Mass Dispel at your cursor.",
-        src = "Retail",
-        body = [=[
-#showtooltip Mass Dispel
-/cast [@cursor] Mass Dispel]=],
-    },
-    {
         name = "Levitate",
         desc = "Levitate on yourself, or on a friendly mouseover.",
         body = [=[
 #showtooltip Levitate
 /cast [@mouseover,help,nodead][@player] Levitate]=],
+    },
+    {
+        name = "Divine Grace MO",
+        desc = "Divine Grace on your mouseover or target: an instant emergency heal for a friend below 50% health that also removes Weakened Soul. It can't target yourself.",
+        body = [=[
+#showtooltip Divine Grace
+/cast [@mouseover,help,nodead][help,nodead] Divine Grace]=],
+    },
+    {
+        name = "Contingency MO",
+        desc = "Gnome priests: Contingency Plan on your mouseover, your target, or yourself. If they drop below 35% health within 30 seconds, they get a shield and a heal.",
+        body = [=[
+#showtooltip Contingency Plan
+/cast [@mouseover,help,nodead][help,nodead][@player] Contingency Plan]=],
     },
 })
 
@@ -108,14 +114,6 @@ AS:AddMacros("PRIEST", "Discipline", {
         body = [=[
 #showtooltip Smite
 /cast [@mouseover,harm,nodead][] Smite]=],
-    },
-    {
-        name = "Pain Suppress",
-        desc = "Pain Suppression on your mouseover, or your target.",
-        body = [=[
-#showtooltip Pain Suppression
-/stopcasting
-/cast [@mouseover,help,nodead][] Pain Suppression]=],
     },
     {
         name = "Penance MO",
@@ -156,13 +154,6 @@ AS:AddMacros("PRIEST", "Holy", {
 #showtooltip Prayer of Mending
 /cast [@mouseover,help,nodead][] Prayer of Mending]=],
     },
-    {
-        name = "Circle MO",
-        desc = "Circle of Healing centered on your mouseover's party, or your target's.",
-        body = [=[
-#showtooltip Circle of Healing
-/cast [@mouseover,help,nodead][] Circle of Healing]=],
-    },
 })
 
 AS:AddMacros("PRIEST", "Shadow", {
@@ -182,19 +173,11 @@ AS:AddMacros("PRIEST", "Shadow", {
 /cast [@mouseover,harm,nodead][] Shadow Word: Pain]=],
     },
     {
-        name = "VT MO",
-        desc = "Vampiric Touch on your mouseover or target.",
-        body = [=[
-#showtooltip Vampiric Touch
-/cast [@mouseover,harm,nodead][] Vampiric Touch]=],
-    },
-    {
         name = "Mind Blast",
-        desc = "Mind Blast that sends your Shadowfiend at the same target if it is out.",
+        desc = "Mind Blast on your mouseover or target.",
         body = [=[
 #showtooltip Mind Blast
-/petattack
-/cast Mind Blast]=],
+/cast [@mouseover,harm,nodead][] Mind Blast]=],
     },
     {
         name = "Silence Focus",
@@ -204,18 +187,8 @@ AS:AddMacros("PRIEST", "Shadow", {
 /cast [@focus,harm,nodead][@mouseover,harm,nodead][] Silence]=],
     },
     {
-        name = "Shadowfiend",
-        desc = "Shadowfiend with trinkets and racials, for a mana and damage boost.",
-        body = [=[
-#showtooltip Shadowfiend
-/use 13
-/use 14
-/cast Berserking
-/cast Shadowfiend]=],
-    },
-    {
         name = "SW:D MO",
-        desc = "Shadow Word: Death on your mouseover, or your target. Use it to finish off low-health enemies.",
+        desc = "Shadow Word: Death on your mouseover, or your target. Use it to finish off low-health enemies: if the target survives, you take 30% of your maximum health.",
         body = [=[
 #showtooltip Shadow Word: Death
 /cast [@mouseover,harm,nodead][] Shadow Word: Death]=],

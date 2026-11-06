@@ -30,14 +30,6 @@ AS:AddMacros("MAGE", "General", {
 /cast [@focus,harm,nodead][@mouseover,harm,nodead][] Counterspell]=],
     },
     {
-        name = "Spellsteal",
-        desc = "From Wowhead: Spellsteal from your focus, mouseover, or target.",
-        src = "Retail",
-        body = [=[
-#showtooltip Spellsteal
-/cast [@focus,harm,nodead][@mouseover,harm,nodead][] Spellsteal]=],
-    },
-    {
         name = "Polymorph",
         desc = "Polymorph your mouseover or focus without losing your current target.",
         body = [=[
@@ -128,6 +120,13 @@ AS:AddMacros("MAGE", "Arcane", {
 #showtooltip
 /use <Mana Gem>]=],
     },
+    {
+        name = "Arcane Wrath MO",
+        desc = "Arcane Wrath on your mouseover or target. Its damage grows with your maximum mana.",
+        body = [=[
+#showtooltip Arcane Wrath
+/cast [@mouseover,harm,nodead][] Arcane Wrath]=],
+    },
 })
 
 AS:AddMacros("MAGE", "Fire", {
@@ -153,19 +152,11 @@ AS:AddMacros("MAGE", "Fire", {
     },
     {
         name = "Fire Blast",
-        desc = "Stops your current cast and fires an instant Fire Blast. Good for finishing low targets.",
+        desc = "Stops your current cast and fires an instant Fire Blast. Good for finishing low targets. Shares its 8 second cooldown with Ice Lance.",
         body = [=[
 #showtooltip Fire Blast
 /stopcasting
 /cast Fire Blast]=],
-    },
-    {
-        name = "Dragon's Breath",
-        desc = "Stops casting and uses Dragon's Breath for a quick disorient.",
-        body = [=[
-#showtooltip Dragon's Breath
-/stopcasting
-/cast Dragon's Breath]=],
     },
     {
         name = "Scorch MO",
@@ -173,6 +164,21 @@ AS:AddMacros("MAGE", "Fire", {
         body = [=[
 #showtooltip Scorch
 /cast [@mouseover,harm,nodead][] Scorch]=],
+    },
+    {
+        name = "Blast Wave",
+        desc = "Stops casting and uses Blast Wave for quick damage and a 50% slow around you.",
+        body = [=[
+#showtooltip Blast Wave
+/stopcasting
+/cast Blast Wave]=],
+    },
+    {
+        name = "Frostfire MO",
+        desc = "Frostfire Bolt on your mouseover or target. It slows the target and is checked against the lower of its Frost and Fire resistances.",
+        body = [=[
+#showtooltip Frostfire Bolt
+/cast [@mouseover,harm,nodead][] Frostfire Bolt]=],
     },
 })
 
@@ -187,28 +193,13 @@ AS:AddMacros("MAGE", "Frost", {
     },
     {
         name = "Frost Burst",
-        desc = "Icy Veins, racials and trinkets on one button.",
+        desc = "Ice Barrier (a shield that also gives 15% Frost damage for 1 minute, plus 5% while it holds), racial and trinkets on one button.",
         body = [=[
-#showtooltip Icy Veins
-/cast Icy Veins
+#showtooltip Ice Barrier
+/cast Ice Barrier
 /cast Berserking
 /use 13
 /use 14]=],
-    },
-    {
-        name = "Pet Freeze",
-        desc = "Your Water Elemental casts Freeze at your cursor.",
-        body = [=[
-#showtooltip Freeze
-/cast [@cursor] Freeze]=],
-    },
-    {
-        name = "Pet Bolt",
-        desc = "Frostbolt, and your Water Elemental attacks the same target.",
-        body = [=[
-#showtooltip Frostbolt
-/petattack
-/cast Frostbolt]=],
     },
     {
         name = "Snare Bolt",
@@ -224,5 +215,19 @@ AS:AddMacros("MAGE", "Frost", {
 #showtooltip Cold Snap
 /cancelaura Ice Block
 /cast Cold Snap]=],
+    },
+    {
+        name = "Ice Lance MO",
+        desc = "Ice Lance on your mouseover or target. Deals 300% more damage to frozen targets. Shares its 8 second cooldown with Fire Blast.",
+        body = [=[
+#showtooltip Ice Lance
+/cast [@mouseover,harm,nodead][] Ice Lance]=],
+    },
+    {
+        name = "Nova Lance",
+        desc = "Frost Nova, then Ice Lance on the next press for the frozen damage bonus.",
+        body = [=[
+#showtooltip
+/castsequence reset=6 Frost Nova, Ice Lance]=],
     },
 })

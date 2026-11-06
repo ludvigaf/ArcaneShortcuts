@@ -19,11 +19,11 @@ AS:AddMacros("WARLOCK", "General", {
     },
     {
         name = "Pet Attack",
-        desc = "Sends your demon in and applies Curse of Agony.",
+        desc = "Sends your demon in and applies Bane of Agony.",
         body = [=[
-#showtooltip Curse of Agony
+#showtooltip Bane of Agony
 /petattack
-/cast Curse of Agony]=],
+/cast Bane of Agony]=],
     },
     {
         name = "Fear MO",
@@ -80,25 +80,18 @@ AS:AddMacros("WARLOCK", "General", {
 AS:AddMacros("WARLOCK", "Affliction", {
     {
         name = "Agony MO",
-        desc = "Curse of Agony on your mouseover or target.",
+        desc = "Bane of Agony (Forever's renamed Curse of Agony) on your mouseover or target.",
         body = [=[
-#showtooltip Curse of Agony
-/cast [@mouseover,harm,nodead][] Curse of Agony]=],
+#showtooltip Bane of Agony
+/cast [@mouseover,harm,nodead][] Bane of Agony]=],
     },
     {
-        name = "UA MO",
-        desc = "Unstable Affliction on your mouseover or target.",
-        body = [=[
-#showtooltip Unstable Affliction
-/cast [@mouseover,harm,nodead][] Unstable Affliction]=],
-    },
-    {
-        name = "Amplified CoA",
-        desc = "Amplify Curse, then Curse of Agony.",
+        name = "Amplified BoA",
+        desc = "Amplify Curse, then Bane of Agony.",
         body = [=[
 #showtooltip Amplify Curse
 /cast Amplify Curse
-/cast Curse of Agony]=],
+/cast Bane of Agony]=],
     },
     {
         name = "Siphon MO",
@@ -107,16 +100,23 @@ AS:AddMacros("WARLOCK", "Affliction", {
 #showtooltip Siphon Life
 /cast [@mouseover,harm,nodead][] Siphon Life]=],
     },
+    {
+        name = "Exhaustion MO",
+        desc = "Curse of Exhaustion on your mouseover or target: slows movement by 30% for 12 seconds.",
+        body = [=[
+#showtooltip Curse of Exhaustion
+/cast [@mouseover,harm,nodead][] Curse of Exhaustion]=],
+    },
 })
 
 AS:AddMacros("WARLOCK", "Demonology", {
     {
         name = "Fel Summon",
-        desc = "Fel Domination, then a summon. Felhunter by default, Voidwalker with Shift, Succubus with Ctrl, Felguard with Alt.",
+        desc = "Fel Domination, then a summon. Felhunter by default, Voidwalker with Shift, Succubus with Ctrl, Incubus with Alt.",
         body = [=[
 #showtooltip
 /cast Fel Domination
-/cast [mod:shift] Summon Voidwalker; [mod:ctrl] Summon Succubus; [mod:alt] Summon Felguard; Summon Felhunter]=],
+/cast [mod:shift] Summon Voidwalker; [mod:ctrl] Summon Succubus; [mod:alt] Summon Incubus; Summon Felhunter]=],
     },
     {
         name = "Sacrifice",
@@ -156,14 +156,6 @@ AS:AddMacros("WARLOCK", "Destruction", {
 /cast [@cursor] Rain of Fire]=],
     },
     {
-        name = "Shadowfury",
-        desc = "From Wowhead: Shadowfury at your cursor.",
-        src = "Retail",
-        body = [=[
-#showtooltip Shadowfury
-/cast [@cursor] Shadowfury]=],
-    },
-    {
         name = "Infernal",
         desc = "From Wowhead: Inferno (Summon Infernal) at your cursor.",
         src = "Retail",
@@ -186,5 +178,19 @@ AS:AddMacros("WARLOCK", "Destruction", {
 #showtooltip
 /cast Conflagrate
 /cast Immolate]=],
+    },
+    {
+        name = "Incinerate MO",
+        desc = "Incinerate on your mouseover or target. Deals 25% more damage if the target has your Immolate.",
+        body = [=[
+#showtooltip Incinerate
+/cast [@mouseover,harm,nodead][] Incinerate]=],
+    },
+    {
+        name = "Havoc MO",
+        desc = "Bane of Havoc (Destruction talent) on your focus, mouseover or target: 15% of the damage you deal to other targets also hits them.",
+        body = [=[
+#showtooltip Bane of Havoc
+/cast [@focus,harm,nodead][@mouseover,harm,nodead][] Bane of Havoc]=],
     },
 })

@@ -22,8 +22,8 @@ Writing macros by hand is fiddly. You have to remember the conditionals, fit eve
 - **Choose an icon.** Left-click the icon to step through the icons of the spells and items in the macro, or keep the dynamic **?** icon so the button changes with the macro.
 - **Create with one click.** Choose **Create (Character)** or **Create (Account)**. The macro is saved and lands on your cursor, so you can drop it straight onto an action bar.
 - **Safe to click again.** If a macro with the same name already exists, it is updated instead of duplicated.
-- **See the macros you already have.** The **My Macros** button (the note icon at the top left, before the class icons) lists your account and character macros, with how many slots each list has left. Pick one to check its status, edit its name, text or icon and save it, or delete it. Drag a macro from the list onto an action bar.
-- **Up to date with WoW Forever.** Includes macros for Forever's new abilities, such as the paladin taunt (Seal of Fury), Holy Strike, Primal Bite, Shifting Power, Spearing Strike, Penance, Riptide, Lava Burst and Sniper Shot.
+- **See the macros you already have.** The **My Macros** button (the note icon at the top left, before the class icons) opens on an **Overview** of your account and character macros together, with how many slots each type has left. **Account** and **Character** show one type at a time. Pick a macro to check its status, edit its name, text or icon and save it, or delete it. Drag a macro from the list onto an action bar.
+- **Up to date with WoW Forever.** Checked against the launch client (November 2026). Includes macros for Forever's new abilities, such as the paladin taunt (Seal of Fury), Hammer of the Righteous, Shank, Death Mark, Bane of Agony, Lightning Mastery, Totemic Call, Ice Lance, Primal Bite, Shifting Power, Spearing Strike, Penance, Riptide and Sniper Shot.
 - **Classic and Wowhead macros.** Macros marked **Classic** are Classic/TBC staples. Macros marked **Wowhead** are adapted from Wowhead's spec guides and rewritten for the Classic client.
 
 ---
@@ -31,14 +31,14 @@ Writing macros by hand is fiddly. You have to remember the conditionals, fit eve
 ## How to use
 
 1. Type **`/as`** or click the book icon on your minimap.
-2. The window opens on **My Macros**, your own account and character macros. Click a class icon at the top to browse its ready-made macros.
+2. The window opens on the **My Macros** overview, which lists your own account and character macros together. Click a class icon at the top to browse its ready-made macros.
 3. Choose a category on the left (General, a spec, or All Classes), then click a macro.
 4. Read the description, check the colored status and edit the text if you want.
 5. Click **Create (Character)** or **Create (Account)**, then drop the macro on your action bar.
 
 Click **Reset** to undo your edits and get the original macro back.
 
-To manage the macros you already have, click the **My Macros** note icon at the top left. The window opens there by default. Choose **Account** or **Character**, pick a macro, then click **Save Changes** or **Delete**. Deleting asks you to confirm first.
+To manage the macros you already have, click the **My Macros** note icon at the top left. The window opens there by default. Pick a macro from the **Overview**, or choose **Account** or **Character** to see one type, then click **Save Changes** or **Delete**. Deleting asks you to confirm first.
 
 ![The Hunter General macros, with the Feign Death macro open and marked Partly available](images/hunter-example.png)
 
@@ -57,7 +57,7 @@ You can drag the minimap button around the edge of the minimap.
 
 - **Macros can't be created in combat.** This is a game rule. Wait until combat ends and click again.
 - **Character or Account?** Character macros exist only on the character you're playing. Account macros are shared by all your characters. Both have a limited number of slots, and the addon tells you if they're full.
-- **"Partly available" isn't an error.** WoW Forever mixes Classic with some TBC spells, and you may not have every spell yet. The macro still works for the parts you do have, and the missing spells start working as soon as you learn them.
+- **"Partly available" isn't an error.** You may not have every spell yet, because some come from a trainer at a higher level and others from a talent. The macro still works for the parts you do have, and the missing spells start working as soon as you learn them.
 - **Racials and pet abilities are optional.** Cooldown macros may include racials like Blood Fury or Berserking, and hunter macros may include abilities only some pets have. A missing one doesn't count against the status.
 
 ---

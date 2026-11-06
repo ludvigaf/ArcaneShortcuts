@@ -77,6 +77,14 @@ AS:AddMacros(AS.SHARED, AS.SHARED_CATEGORY, {
 /startattack]=],
     },
     {
+        name = "Shoot/Throw",
+        desc = "Fires whichever ranged weapon you have equipped: bow, crossbow, gun or thrown. Does not cover wands or a hunter's Auto Shot.",
+        optional = { "Shoot Bow", "Shoot Crossbow", "Shoot Gun", "Throw" },
+        body = [=[
+#showtooltip
+/cast [equipped:Bows] !Shoot Bow; [equipped:Crossbows] !Shoot Crossbow; [equipped:Guns] !Shoot Gun; [equipped:Thrown] !Throw]=],
+    },
+    {
         name = "Assist Mouseover",
         desc = "Targets whatever your mouseover (or your target) is attacking.",
         body = [=[

@@ -66,19 +66,40 @@ AS:AddMacros("SHAMAN", "General", {
 #showtooltip Totemic Recall
 /cast Totemic Recall]=],
     },
+    {
+        name = "Totem Bars",
+        desc = "Places the totems set on your Totem Bar in one cast: Call of the Elements by default, Call of the Ancestors with Shift, Call of the Spirits with Ctrl.",
+        body = [=[
+#showtooltip
+/cast [mod:shift] Call of the Ancestors; [mod:ctrl] Call of the Spirits; Call of the Elements]=],
+    },
+    {
+        name = "Totemic Call",
+        desc = "Moves your active totems to where you are standing (30 second cooldown), so you can reposition without dropping them again.",
+        body = [=[
+#showtooltip Totemic Call
+/cast Totemic Call]=],
+    },
+    {
+        name = "Fire Nova",
+        desc = "Fire Nova: instant fire damage to enemies within 10 yards of your active Fire totem. No longer a totem of its own on Forever.",
+        body = [=[
+#showtooltip Fire Nova
+/cast Fire Nova]=],
+    },
 })
 
 AS:AddMacros("SHAMAN", "Elemental", {
     {
         name = "Ele Burst",
-        desc = "Adapted from Wowhead's Ascendance opener: Elemental Mastery, trinket and racial, then a crit Chain Lightning.",
+        desc = "Adapted from Wowhead's Ascendance opener: Lightning Mastery (Forever's renamed Elemental Mastery: faster Lightning Bolt and no Chain Lightning cooldown for 15 seconds), trinket and racial, then Chain Lightning.",
         src = "Retail",
         body = [=[
-#showtooltip Elemental Mastery
+#showtooltip Lightning Mastery
 /use 13
 /cast Berserking
 /cast Blood Fury
-/cast Elemental Mastery
+/cast Lightning Mastery
 /cast Chain Lightning]=],
     },
     {
@@ -97,13 +118,6 @@ AS:AddMacros("SHAMAN", "Elemental", {
 #showtooltip Flame Shock
 /cast [@mouseover,harm,nodead][] Flame Shock]=],
     },
-    {
-        name = "Lava Burst MO",
-        desc = "Lava Burst on your mouseover, or your target. Best right after Flame Shock.",
-        body = [=[
-#showtooltip Lava Burst
-/cast [@mouseover,harm,nodead][] Lava Burst]=],
-    },
 })
 
 AS:AddMacros("SHAMAN", "Enhancement", {
@@ -117,10 +131,10 @@ AS:AddMacros("SHAMAN", "Enhancement", {
     },
     {
         name = "Enh Burst",
-        desc = "Shamanistic Rage, racials and trinkets, then Stormstrike.",
+        desc = "Rage of the Farseer (30% attack speed for 25 seconds), racials and trinkets, then Stormstrike.",
         body = [=[
-#showtooltip Shamanistic Rage
-/cast Shamanistic Rage
+#showtooltip Rage of the Farseer
+/cast Rage of the Farseer
 /cast Blood Fury
 /cast Berserking
 /use 13
@@ -176,13 +190,6 @@ AS:AddMacros("SHAMAN", "Restoration", {
         body = [=[
 #showtooltip Lesser Healing Wave
 /cast [@mouseover,help,nodead][] Lesser Healing Wave]=],
-    },
-    {
-        name = "Earth Shield",
-        desc = "Earth Shield on your mouseover or focus. Keep it on the tank.",
-        body = [=[
-#showtooltip Earth Shield
-/cast [@mouseover,help,nodead][@focus,help,nodead][] Earth Shield]=],
     },
     {
         name = "Heal / Bolt",

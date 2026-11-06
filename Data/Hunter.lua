@@ -38,18 +38,10 @@ AS:AddMacros("HUNTER", "General", {
     },
     {
         name = "Aspects",
-        desc = "Aspect of the Hawk in combat and Cheetah out of combat. Shift for Pack.",
+        desc = "Aspect of the Hawk in combat and Cheetah out of combat. Shift for Pack, Ctrl for Viper to regain mana.",
         body = [=[
 #showtooltip
-/cast [mod:shift] Aspect of the Pack; [combat] Aspect of the Hawk; Aspect of the Cheetah]=],
-    },
-    {
-        name = "Misdirection",
-        desc = "From Wowhead: Misdirection on your focus, mouseover friend, or your pet.",
-        src = "Retail",
-        body = [=[
-#showtooltip Misdirection
-/cast [@focus,help,nodead][@mouseover,help,nodead][@pet,exists,nodead] Misdirection]=],
+/cast [mod:shift] Aspect of the Pack; [mod:ctrl] Aspect of the Viper; [combat] Aspect of the Hawk; Aspect of the Cheetah]=],
     },
     {
         name = "Tranq MO",
@@ -91,6 +83,21 @@ AS:AddMacros("HUNTER", "General", {
 #showtooltip Growl
 /cast [@mouseover,harm,nodead][@focus,harm,nodead][] Growl]=],
     },
+    {
+        name = "Hawk MO",
+        desc = "Summon Hawk on your mouseover or target, and your pet attacks. Shares its cooldown with Arcane Shot.",
+        body = [=[
+#showtooltip Summon Hawk
+/petattack
+/cast [@mouseover,harm,nodead][] Summon Hawk]=],
+    },
+    {
+        name = "Enchanted Flare",
+        desc = "Enchanted Flare at your cursor. Reveals hidden enemies like Flare and also staves off magical darkness.",
+        body = [=[
+#showtooltip Enchanted Flare
+/cast [@cursor] Enchanted Flare]=],
+    },
 })
 
 AS:AddMacros("HUNTER", "Beast Mastery", {
@@ -106,15 +113,6 @@ AS:AddMacros("HUNTER", "Beast Mastery", {
 /cast Berserking
 /use 13
 /use 14]=],
-    },
-    {
-        name = "Kill Command",
-        desc = "From Wowhead: sends your pet in and uses Kill Command.",
-        src = "Retail",
-        body = [=[
-#showtooltip Kill Command
-/petattack
-/cast Kill Command]=],
     },
     {
         name = "Pet Basics",
@@ -133,17 +131,6 @@ AS:AddMacros("HUNTER", "Beast Mastery", {
 #showtooltip Intimidation
 /petattack
 /cast Intimidation]=],
-    },
-    {
-        name = "Steady Pet",
-        optional = { "Claw", "Bite" },
-        desc = "Adapted from Wowhead's Cobra Shot macro: Steady Shot that also keeps your pet's basic attack rolling.",
-        src = "Retail",
-        body = [=[
-#showtooltip Steady Shot
-/cast Steady Shot
-/cast [@pettarget] Claw
-/cast [@pettarget] Bite]=],
     },
 })
 
@@ -169,14 +156,6 @@ AS:AddMacros("HUNTER", "Marksmanship", {
 /petattack
 /cast !Auto Shot
 /cast Aimed Shot]=],
-    },
-    {
-        name = "Steady Shot",
-        desc = "Steady Shot that starts Auto Shot if it is not already running.",
-        body = [=[
-#showtooltip Steady Shot
-/cast !Auto Shot
-/cast Steady Shot]=],
     },
     {
         name = "Multi-Shot MO",
@@ -243,13 +222,6 @@ AS:AddMacros("HUNTER", "Survival", {
 /cast [harm] Raptor Strike]=],
     },
     {
-        name = "Wyvern Focus",
-        desc = "Wyvern Sting on your focus or mouseover. Crowd control a second target.",
-        body = [=[
-#showtooltip Wyvern Sting
-/cast [@focus,harm,nodead][@mouseover,harm,nodead][] Wyvern Sting]=],
-    },
-    {
         name = "Counter/Bite",
         desc = "Counterattack after a parry, otherwise Mongoose Bite or Raptor Strike.",
         body = [=[
@@ -266,5 +238,13 @@ AS:AddMacros("HUNTER", "Survival", {
         body = [=[
 #showtooltip Freezing Trap
 /cast [@cursor] Freezing Trap]=],
+    },
+    {
+        name = "Lacerate",
+        desc = "Lacerate that also starts auto-attack: a melee bleed that lasts 21 seconds.",
+        body = [=[
+#showtooltip Lacerate
+/startattack
+/cast Lacerate]=],
     },
 })
