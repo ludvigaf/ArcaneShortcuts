@@ -5,6 +5,7 @@
 ## Version: 1.2.0
 ## IconTexture: Interface\Icons\INV_Misc_Book_11
 ## SavedVariables: ArcaneShortcutsDB
+## X-Curse-Project-ID: 1732482
 
 Core.lua
 

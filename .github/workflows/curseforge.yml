@@ -1,0 +1,96 @@
+# Uploads a published GitHub release to CurseForge.
+#
+# The release must have the addon zip (ArcaneShortcuts_v*.zip) attached; its
+# notes (the changelog) become the CurseForge changelog. The CurseForge
+# project ID is read from "## X-Curse-Project-ID:" in ArcaneShortcuts.toc and
+# the API token from the CURSEFORGE_APIKEY secret.
+#
+# To re-upload an existing release, run this workflow by hand with its tag.
+name: Upload to CurseForge
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to upload (e.g. v1.2.1)
+        required: true
+
+env:
+  # CurseForge's game version for WoW Forever. Update when Forever patches.
+  CF_GAME_VERSION: "1.60.1"
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Pick the release tag
+        id: tag
+        env:
+          EVENT_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: echo "tag=${EVENT_TAG:-$INPUT_TAG}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.tag.outputs.tag }}
+
+      - name: Read the CurseForge project ID
+        id: project
+        run: |
+          id=$(sed -n 's/^## X-Curse-Project-ID:[[:space:]]*\([0-9]\+\).*/\1/p' ArcaneShortcuts.toc | tr -d '\r')
+          if [ -z "$id" ]; then
+            echo "::error::Add '## X-Curse-Project-ID: <id>' to ArcaneShortcuts.toc"
+            exit 1
+          fi
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+
+      - name: Download the release zip and notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          mkdir dist
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern 'ArcaneShortcuts_v*.zip' --dir dist
+          count=$(ls dist/*.zip | wc -l)
+          if [ "$count" -ne 1 ]; then
+            echo "::error::Expected one ArcaneShortcuts_v*.zip on $TAG, found $count"
+            exit 1
+          fi
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body > changelog.md
+
+      - name: Find the CurseForge game version ID
+        id: version
+        env:
+          CF_TOKEN: ${{ secrets.CURSEFORGE_APIKEY }}
+        run: |
+          curl -sfS -H "X-Api-Token: $CF_TOKEN" https://wow.curseforge.com/api/game/versions > versions.json
+          ids=$(jq -c --arg v "$CF_GAME_VERSION" '[.[] | select(.name == $v) | .id]' versions.json)
+          if [ "$(jq length <<<"$ids")" -ne 1 ]; then
+            echo "::error::Expected one CurseForge game version named $CF_GAME_VERSION, found: $ids"
+            jq -r --arg v "$CF_GAME_VERSION" '.[] | select(.name == $v) | "\(.id) type=\(.gameVersionTypeID) \(.slug)"' versions.json
+            exit 1
+          fi
+          echo "ids=$ids" >> "$GITHUB_OUTPUT"
+
+      - name: Upload to CurseForge
+        env:
+          CF_TOKEN: ${{ secrets.CURSEFORGE_APIKEY }}
+          PROJECT_ID: ${{ steps.project.outputs.id }}
+          VERSION_IDS: ${{ steps.version.outputs.ids }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          jq -n --rawfile changelog changelog.md --arg name "$TAG" --argjson versions "$VERSION_IDS" \
+            '{changelog: $changelog, changelogType: "markdown", displayName: $name,
+              gameVersions: $versions, releaseType: "release"}' > metadata.json
+          zip=$(ls dist/*.zip)
+          curl -sS --fail-with-body \
+            -H "X-Api-Token: $CF_TOKEN" \
+            -F "metadata=<metadata.json;type=application/json" \
+            -F "file=@$zip" \
+            "https://wow.curseforge.com/api/projects/$PROJECT_ID/upload-file"
+          echo
+          echo "Uploaded $zip to CurseForge project $PROJECT_ID"
