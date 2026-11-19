@@ -60,6 +60,10 @@ jobs:
             echo "::error::Expected one ArcaneShortcuts_v*.zip on $TAG, found $count"
             exit 1
           fi
+          if [ ! -f "dist/ArcaneShortcuts_$TAG.zip" ]; then
+            echo "::error::The zip on $TAG must be named ArcaneShortcuts_$TAG.zip, found $(ls dist)"
+            exit 1
+          fi
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body > changelog.md
 
       - name: Find the CurseForge game version ID
@@ -83,10 +87,11 @@ jobs:
           VERSION_IDS: ${{ steps.version.outputs.ids }}
           TAG: ${{ steps.tag.outputs.tag }}
         run: |
-          jq -n --rawfile changelog changelog.md --arg name "$TAG" --argjson versions "$VERSION_IDS" \
+          zip=$(ls dist/*.zip)
+          # CurseForge shows the file as ArcaneShortcuts_v<version>.zip.
+          jq -n --rawfile changelog changelog.md --arg name "$(basename "$zip")" --argjson versions "$VERSION_IDS" \
             '{changelog: $changelog, changelogType: "markdown", displayName: $name,
               gameVersions: $versions, releaseType: "release"}' > metadata.json
-          zip=$(ls dist/*.zip)
           curl -sS --fail-with-body \
             -H "X-Api-Token: $CF_TOKEN" \
             -F "metadata=<metadata.json;type=application/json" \
