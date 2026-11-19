@@ -751,8 +751,19 @@ end
 local mini
 local function PositionMini()
     local a = math.rad(AS.db.minimapAngle or 200)
+    local x, y = math.cos(a), math.sin(a)
+    -- Ride the rim: radius follows the minimap's real size (it differs
+    -- between clients and minimap addons) instead of a fixed distance.
+    local w = Minimap:GetWidth() / 2 + 5
+    local h = Minimap:GetHeight() / 2 + 5
+    local shape = GetMinimapShape and GetMinimapShape() or "ROUND"
+    if shape == "SQUARE" then
+        -- Push the point out to the square's edge.
+        local m = math.max(math.abs(x), math.abs(y))
+        x, y = x / m, y / m
+    end
     mini:ClearAllPoints()
-    mini:SetPoint("CENTER", Minimap, "CENTER", math.cos(a) * 80, math.sin(a) * 80)
+    mini:SetPoint("CENTER", Minimap, "CENTER", x * w, y * h)
 end
 
 function AS:UpdateMinimapButton()
@@ -800,6 +811,7 @@ function AS:OnLoad()
         GameTooltip:Show()
     end)
     mini:SetScript("OnLeave", GameTooltip_Hide)
+    Minimap:HookScript("OnSizeChanged", PositionMini)
     PositionMini()
     self:UpdateMinimapButton()
 end

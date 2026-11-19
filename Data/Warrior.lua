@@ -56,6 +56,21 @@ AS:AddMacros("WARRIOR", "General", {
 /cast [nostance:3] Berserker Stance; Berserker Rage]=],
     },
     {
+        name = "Disarm",
+        desc = "Switches to Defensive Stance if needed, then disarms your mouseover or target. Press twice if you start in another stance.",
+        body = [=[
+#showtooltip Disarm
+/cast [nostance:2] Defensive Stance; [@mouseover,harm,nodead][] Disarm]=],
+    },
+    {
+        name = "Shield Wall",
+        desc = "From Wowhead Forever's protection guide, which says to macro stance dips: switches to Defensive Stance if needed, then uses Shield Wall. Press twice if you start in another stance.",
+        src = "Retail",
+        body = [=[
+#showtooltip Shield Wall
+/cast [nostance:2] Defensive Stance; Shield Wall]=],
+    },
+    {
         name = "Off Mode",
         desc = "Moves to Battle Stance and equips your two-hander.",
         body = [=[
@@ -186,6 +201,31 @@ AS:AddMacros("WARRIOR", "Protection", {
         body = [=[
 #showtooltip Taunt
 /cast [nostance:2] Defensive Stance; [@mouseover,harm,nodead][] Taunt]=],
+    },
+    {
+        name = "Stance Flip",
+        desc = "From Wowhead Forever's macro guide: Defensive Stance from Battle Stance, otherwise Battle Stance.",
+        src = "Retail",
+        body = [=[
+#showtooltip
+/cast [stance:1] Defensive Stance; Battle Stance]=],
+    },
+    {
+        name = "Charge/Exe/Taunt",
+        desc = "From Wowhead Forever's macro guide: Charge out of combat, then Execute in Battle Stance or Taunt in Defensive Stance. A Wowhead comment reports the Vanguard talent breaks macros with /cast Charge.",
+        src = "Retail",
+        body = [=[
+#showtooltip
+/cast [nocombat] Charge
+/cast [stance:1] Execute; [stance:2] Taunt]=],
+    },
+    {
+        name = "Shield Block",
+        desc = "From Wowhead Forever's protection guide, which says to macro stance dips: switches to Defensive Stance if needed, then uses Shield Block.",
+        src = "Retail",
+        body = [=[
+#showtooltip Shield Block
+/cast [nostance:2] Defensive Stance; Shield Block]=],
     },
     {
         name = "Sunder",

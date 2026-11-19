@@ -70,6 +70,16 @@ AS:AddMacros("DRUID", "General", {
 #showtooltip
 /cast [mod:shift] Gift of the Wild; [@mouseover,help,nodead][] Mark of the Wild]=],
     },
+    {
+        name = "Mark + Thorns",
+        desc = "From Wowhead Forever's macro guide: leaves your form, then Mark of the Wild and Thorns on the next press. Shift for Gift of the Wild. Resets after 10 seconds or a new target.",
+        src = "Retail",
+        body = [=[
+#showtooltip
+/cancelform
+/cast [mod:shift] Gift of the Wild
+/castsequence [nomod] reset=10/target Mark of the Wild, Thorns]=],
+    },
 })
 
 AS:AddMacros("DRUID", "Balance", {
@@ -174,6 +184,16 @@ AS:AddMacros("DRUID", "Feral (Bear)", {
         body = [=[
 #showtooltip Dire Bear Form
 /cast !Dire Bear Form]=],
+    },
+    {
+        name = "Bear Gear",
+        desc = "From Wowhead Forever's macro guide: enters Dire Bear Form and puts on your tanking rings. Fill in the ring names.",
+        src = "Retail",
+        body = [=[
+#showtooltip Dire Bear Form
+/cast !Dire Bear Form
+/equipslot 11 <Tank Ring 1>
+/equipslot 12 <Tank Ring 2>]=],
     },
     {
         name = "Maul",

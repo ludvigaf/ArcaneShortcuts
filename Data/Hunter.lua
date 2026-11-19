@@ -60,6 +60,14 @@ AS:AddMacros("HUNTER", "General", {
 /cast [@cursor] Flare]=],
     },
     {
+        name = "Eagle Eye",
+        desc = "From Wowhead Forever's hunter guide: Eagle Eye at your cursor. Press it again while looking through it to hop further and scout a wide area.",
+        src = "Retail",
+        body = [=[
+#showtooltip Eagle Eye
+/cast [@cursor] Eagle Eye]=],
+    },
+    {
         name = "Melee/Ranged",
         desc = "Raptor Strike and Mongoose Bite in melee range, Auto Shot at range.",
         body = [=[
